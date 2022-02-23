@@ -39,7 +39,7 @@ client = Client(wsdl, transport=Transport(session=session))
 # Following command can be used to check if the webservice is active
 #print(client.service.areYouThere())
 
-scan_path = '/home/htdocs/aldrought/cr_scripts/'
+scan_path = ''
 SCAN = pd.read_csv(scan_path + 'SCAN_AL_SMS_only.csv')
 #print(SCAN.shape)
 #print(SCAN.head())
