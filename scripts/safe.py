@@ -1,3 +1,4 @@
+
 import dash
 import pandas as pd
 import plotly.express as px
@@ -10,13 +11,13 @@ from dash.dependencies import Input, Output
 from datetime import date, timedelta
 import numpy as np
 
-#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-#mapbox_access_token = 'pk.eyJ1IjoibGVmdHk2NjYiLCJhIjoiY2tyMmUwbTd3MmFicDJ0bDM4MWduNzM3ZiJ9.pDLUOLA--9M4NpkVOKWkzQ'
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+mapbox_access_token = 'pk.eyJ1IjoibGVmdHk2NjYiLCJhIjoiY2tyMmUwbTd3MmFicDJ0bDM4MWduNzM3ZiJ9.pDLUOLA--9M4NpkVOKWkzQ'
 
 # -------------------- THE SET-UP ------------------------------------------------------
 
 # ---------- SCAN DATA -----------------------
-scan_path = 'scripts/'
+scan_path = '/home/htdocs/aldrought/cr_scripts/'
 SCAN = pd.read_csv(scan_path + 'SCAN_AL_SMS_only.csv')
 #print('SCAN')
 #print(SCAN.shape)
@@ -58,11 +59,11 @@ mid_lat = (compare['latitude'].max() + compare['latitude'].min())/2
 colors = px.colors.qualitative.Plotly
 #colors = ['rgb(174,89,89)']
 
-#app = dash.Dash(__name__)
-# [DC] comment out this line requiring external css. The css will need to
+app = dash.Dash(__name__)
+# [DC] comment out this line requiring external css. The css will need to 
 # [DC]        be installed locally.
 #app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SPACELAB])
-app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+#app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 # --------- GETTING THE 7-DAY AVERAGES OVERALL TABLE ---------------------
 # subset to get just needed columns then get min date for soil moisture data for each station
@@ -228,7 +229,7 @@ def filled_line_graph(avg_df, select_df, layer, station):
 # --------------------- LAYOUT SECTION ---------------------------------------------------
 # App Layout
 app.layout = dbc.Container([
-    dbc.Row(dbc.Col(html.H1('Alabama Soil Moisture Network: AL-SoilNet',
+    dbc.Row(dbc.Col(html.H1('% Soil Moisture for Alabama, U.S.A.',
                               className= 'text-center text-primary mb-4'), width=12)),
     dbc.Row(dbc.Col(html.Div(id='output_s'))),
     dbc.Row([
@@ -349,7 +350,7 @@ def update_map(station_type, start_Date, end_Date):
         height=800,
         title=dict(text='Click on site to update graphs.<br>Reclick after using dropdown above.', font=dict(size=20, color='black')),
         mapbox=dict(
-            #accesstoken=mapbox_access_token,
+            accesstoken=mapbox_access_token,
             style='light',
             center=dict(
                 lat=32.7119,
