@@ -4,7 +4,7 @@ import sys
 import numpy as np
 
 # read in existing CRN df so we can add to it
-crn_path = '/home/htdocs/aldrought/cr_scripts/'
+crn_path = ''
 ol_CRN = pd.read_csv(crn_path + 'CRN_AL_all.csv')
 # since we read in the entire year thus far, just get the new dates
 # CRN only updates to previous day. Today is only available tomorrow.
