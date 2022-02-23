@@ -64,6 +64,8 @@ colors = px.colors.qualitative.Plotly
 #app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SPACELAB])
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
+server = app.server
+
 # --------- GETTING THE 7-DAY AVERAGES OVERALL TABLE ---------------------
 # subset to get just needed columns then get min date for soil moisture data for each station
 scan_real_min = scan.dropna(how='all', subset=['5cm', '10cm', '20cm', '50cm', '100cm'])
