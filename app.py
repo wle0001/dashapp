@@ -10,8 +10,8 @@ from dash.dependencies import Input, Output
 from datetime import date, timedelta
 import numpy as np
 
-#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-#mapbox_access_token = 'pk.eyJ1IjoibGVmdHk2NjYiLCJhIjoiY2tyMmUwbTd3MmFicDJ0bDM4MWduNzM3ZiJ9.pDLUOLA--9M4NpkVOKWkzQ'
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+mapbox_access_token = 'pk.eyJ1IjoibGVmdHk2NjYiLCJhIjoiY2tyMmUwbTd3MmFicDJ0bDM4MWduNzM3ZiJ9.pDLUOLA--9M4NpkVOKWkzQ'
 
 # -------------------- THE SET-UP ------------------------------------------------------
 
@@ -351,7 +351,7 @@ def update_map(station_type, start_Date, end_Date):
         height=800,
         title=dict(text='Click on site to update graphs.<br>Reclick after using dropdown above.', font=dict(size=20, color='black')),
         mapbox=dict(
-            #accesstoken=mapbox_access_token,
+            accesstoken=mapbox_access_token,
             style='light',
             center=dict(
                 lat=32.7119,
