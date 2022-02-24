@@ -43,7 +43,7 @@ crn['Date'] = pd.to_datetime(crn['Date'],format='%Y-%m-%d')
 crn_stations = list(crn['station'].unique())
 
 # ---------- STEMNet DATA ----------------------
-STM = pd.read_csv('STEMNet_AL_all.csv')
+STM = pd.read_csv(scan_path + 'STEMNet_AL_all.csv')
 STM2 = STM.replace(to_replace=-99.0, value=np.nan)
 #print('CRN')
 stm = STM2[['site', 'LST_DATE',
