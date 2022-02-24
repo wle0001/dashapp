@@ -98,7 +98,7 @@ depth_start_dates = min_scan_dates.append(min_crn_dates).append(min_stm_dates)
 # get list of all possible stations. Need this to make the master_df below:
 stations = depth_start_dates['station'].values.tolist()
 
-big_df = scan_real_min.append(crn_real_min).append(smt_real_min)
+big_df = scan_real_min.append(crn_real_min).append(stm_real_min)
 #print(big_df.shape)
 
 depth_start_dates.set_index('station', inplace=True)
