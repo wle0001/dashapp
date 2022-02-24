@@ -20,3 +20,5 @@ station,startDate,latitude,longitude,station_type
 AL_Fairhope_3_NE,2009-06-30,30.55,-87.88,CRN
 AL_Gadsden_19_N,2009-06-21,34.29,-85.96,CRN
 AL_Selma_13_WNW,2018-03-28,32.46,-87.24,CRN
+STEMNet-1,2022-01-19,34.894,-86.602,STEMNet
+STEMNet-2,2022-02-15,34.783,-86.55,STEMNet

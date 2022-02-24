@@ -43,7 +43,8 @@ crn['Date'] = pd.to_datetime(crn['Date'],format='%Y-%m-%d')
 crn_stations = list(crn['station'].unique())
 
 # ----------- METADATA ---------
-compare = pd.read_csv(scan_path + 'CRN_SCAN_soil_meta_mini.csv')
+#compare = pd.read_csv(scan_path + 'CRN_SCAN_soil_meta_mini.csv')
+compare = pd.read_csv(scan_path + 'soil_meta_mini.csv')#added STEMNet
 mid_lon = (compare['longitude'].max() + compare['longitude'].min())/2
 #print(mid_lon) # -86.7
 mid_lat = (compare['latitude'].max() + compare['latitude'].min())/2
@@ -240,7 +241,7 @@ app.layout = dbc.Container([
                              {'label': 'All', 'value': 'All Stations'},
                              {'label': 'SCAN', 'value': 'SCAN'},
                              {'label': 'CRN', 'value': 'CRN'},
-                             {'label': 'Test Probe', 'value': 'Test Probe'}],
+                             {'label': 'STEMNet', 'value': 'STEMNet'}],
                          value='All Stations',
                          multi=False,
                          searchable=True,
@@ -382,7 +383,7 @@ def update_graph(start_Date, end_Date, stn):
     print(start_date)
     if stn is None:
         # This sets the default if no selection is made
-        station = 'AL_Gadsden_19_N'
+        station = '2056:AL:SCAN'
     else:
         # stn output from the map click is as follows:
         # piggy = {'points': [{'curveNumber': 0, 'pointNumber': 5, 'pointIndex': 5, 'lon': -86.79897, 'lat': 34.19492, 'customdata': '2113:AL:SCAN', 'text': '2113:AL:SCAN<br><br>lon: -86.79897<br>lat: 34.19492<br>start date: 2006-05-18'}]}
