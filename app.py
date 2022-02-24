@@ -42,6 +42,20 @@ crn['Date'] = pd.to_datetime(crn['Date'],format='%Y-%m-%d')
 #print(crn.columns)
 crn_stations = list(crn['station'].unique())
 
+# ---------- STEMNet DATA ----------------------
+STM = pd.read_csv('STEMNet_AL_all.csv')
+STM2 = STM.replace(to_replace=-99.0, value=np.nan)
+#print('CRN')
+stm = STM2[['site', 'LST_DATE',
+           'SOIL_MOISTURE_5_DAILY','SOIL_MOISTURE_20_DAILY',
+           'SOIL_MOISTURE_50_DAILY']].copy()
+stm.columns = ['station','Date','5cm','20cm','50cm']
+stm['station_type'] = 'STMNet'
+stm['Date'] = pd.to_datetime(stm['Date'],format='%Y-%m-%d')
+#print(crn.shape)
+#print(crn.columns)
+stm_stations = list(stm['station'].unique())
+
 # ----------- METADATA ---------
 #compare = pd.read_csv(scan_path + 'CRN_SCAN_soil_meta_mini.csv')
 compare = pd.read_csv(scan_path + 'soil_meta_mini.csv')#added STEMNet
@@ -75,13 +89,16 @@ min_scan_dates = scan.groupby('station')['Date'].min().reset_index(name='min_dat
 crn_real_min = crn.dropna(how='all', subset=['5cm', '10cm', '20cm', '50cm', '100cm'])
 min_crn_dates = crn_real_min.groupby('station')['Date'].min().reset_index(name='min_date')
 
+stm_real_min = stm.dropna(how='all', subset=['5cm', '20cm', '50cm'])
+min_stm_dates = stm_real_min.groupby('station')['Date'].min().reset_index(name='min_date')
+
 # put the scan and crn start dates together as one df: depth_start_dates
-depth_start_dates = min_scan_dates.append(min_crn_dates)
+depth_start_dates = min_scan_dates.append(min_crn_dates).append(min_stm_dates)
 
 # get list of all possible stations. Need this to make the master_df below:
 stations = depth_start_dates['station'].values.tolist()
 
-big_df = scan_real_min.append(crn_real_min)
+big_df = scan_real_min.append(crn_real_min).append(smt_real_min)
 #print(big_df.shape)
 
 depth_start_dates.set_index('station', inplace=True)
@@ -109,8 +126,15 @@ for stn in stations:
     df['50cm_7d'] = df['50cm'].rolling(window=7, min_periods=4).mean()
     df['100cm_7d'] = df['100cm'].rolling(window=7, min_periods=4).mean()
     # Get surface and root-zone means
-    df['surface_7d_mean'] = (df['5cm_7d'] + df['10cm_7d']) / 2
-    df['root_7d_mean'] = (df['20cm_7d'] + df['50cm_7d'] + df['100cm_7d']) / 3
+    if stn[:4] == 'STEM':
+        df['surface_7d_mean'] = df['5cm_7d']
+        df['root_7d_mean'] = (df['20cm_7d'] + df['50cm_7d']) / 2
+    else:
+        df['surface_7d_mean'] = (df['5cm_7d'] + df['10cm_7d']) / 2
+        df['root_7d_mean'] = (df['20cm_7d'] + df['50cm_7d'] + df['100cm_7d']) / 3
+
+    #df['surface_7d_mean'] = (df['5cm_7d'] + df['10cm_7d']) / 2
+    #df['root_7d_mean'] = (df['20cm_7d'] + df['50cm_7d'] + df['100cm_7d']) / 3
 
     master_df = master_df.append(df)
 
