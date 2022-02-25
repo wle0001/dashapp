@@ -144,111 +144,126 @@ def filled_line_graph(avg_df, select_df, layer, station):
     # long-winded to change labels in legend vs hover.
     # min (line only - no legend)
     line = go.Figure()
-    line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['min'], 4),
-                              mode='lines',
-                              line=dict(width=0.7),
-                              line_color='rgb(174,89,89)',
-                              name='min',
-                              showlegend=False))
-    # min to 10%
-    line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['10%'], 4),
-                              fill='tonexty',
-                              mode='lines',
-                              line=dict(width=0.7),
-                              line_color='rgb(174,89,89)',
-                              name='min - 10%',
-                              hoverinfo='skip'))
-    # 10% - 25%
-    line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['25%'],4),
-                              fill='tonexty',
-                              mode='lines',
-                              line=dict(width=0.7),
-                              line_color='rgb(255,200,108)',
-                              name='10% - 25%',
-                              hoverinfo='skip'))
-    # 25% - 75%
-    line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['75%'],4),
-                              fill='tonexty',
-                              mode='lines',
-                              line=dict(width=0.7),
-                              line_color='rgb(97,255,113)',
-                              name='25% - 75%',
-                              hoverinfo='skip'))
-    # 75% - 80%
-    line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['80%'],4),
-                              fill='tonexty',
-                              mode='lines',
-                              line=dict(width=0.7),
-                              line_color='rgb(124,223,214)',
-                              name='75% - 80%',
-                              hoverinfo='skip'))
-    # 90% - max
-    line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['max'],4),
-                              fill='tonexty',
-                              mode='lines',
-                              line=dict(width=0.7),
-                              line_color='rgb(101,102,251)',
-                              name='80% - max',
-                              hoverinfo='skip'))
+    if station[:4] == 'STEM':
 
-    # Order of the hover info.
-    # 5% line
-    line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['5%'],4), mode='lines',
-                              name='5%',
-                              line=dict(width=1.0, color='grey', dash='dash')))
-    # 95% line
-    line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['95%'],4), mode='lines',
-                              name='95%',
-                              line=dict(width=1.0, color='grey', dash='dash')))
-    # current line
-    if layer == 'surface':
-        my_col = 'surface_7d_mean'
-        title = 'surface: 5 & 10cm'
+        if layer == 'surface':
+            my_col = 'surface_7d_mean'
+            title = 'surface: 5 & 10cm'
+        else:
+            my_col = 'root_7d_mean'
+            title = 'root zone: 20, 50, & 100cm'
+
+        line.add_trace(go.Scatter(x=select_df['Date'], y=round(select_df[my_col],4), mode='lines',
+                                  name='current',
+                                  line=dict(width=2.5, color='black')))
+
     else:
-        my_col = 'root_7d_mean'
-        title = 'root zone: 20, 50, & 100cm'
-    line.add_trace(go.Scatter(x=select_df['Date'], y=round(select_df[my_col],4), mode='lines',
-                              name='current',
-                              line=dict(width=2.5, color='black')))
-    # And now the lines for hover info only - not legend
-    line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['10%'], 4),
-                              mode='lines',
-                              line=dict(width=0.7),
-                              line_color='rgb(174,89,89)',
-                              name='10%',
-                              showlegend=False))
-    line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['25%'], 4),
-                              mode='lines',
-                              line=dict(width=0.7),
-                              line_color='rgb(255,200,108)',
-                              name='25%',
-                              showlegend=False))
-    line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['75%'], 4),
-                              mode='lines',
-                              line=dict(width=0.7),
-                              line_color='rgb(97,255,113)',
-                              name='75%',
-                              showlegend=False))
-    line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['80%'], 4),
-                              mode='lines',
-                              line=dict(width=0.7),
-                              line_color='rgb(124,223,214)',
-                              name='80%',
-                              showlegend=False))
-    line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['max'], 4),
-                              mode='lines',
-                              line=dict(width=0.7),
-                              line_color='rgb(101,102,251)',
-                              name='max',
-                              showlegend=False))
-    # grid background as white
-    text = '<span style="font-size: 20px;"><b>' + title + '<b>' + "<br><br>" + '<span style="font-size: 15px;"><b>' + station + '<b>'
-    line.update_layout(title=dict(text=text,
-                                  x=0.5, font=dict(family="Arial", size=20, color='black')),
-                       plot_bgcolor="white",
-                       xaxis=dict(showgrid=True, linecolor='black', gridcolor='rgb(240,240,240)', gridwidth=0.05),
-                       yaxis=dict(showgrid=True, linecolor='black', gridcolor='rgb(240,240,240)', gridwidth=0.05),
-                       hovermode='x')
+
+        line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['min'], 4),
+                                  mode='lines',
+                                  line=dict(width=0.7),
+                                  line_color='rgb(174,89,89)',
+                                  name='min',
+                                  showlegend=False))
+        # min to 10%
+        line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['10%'], 4),
+                                  fill='tonexty',
+                                  mode='lines',
+                                  line=dict(width=0.7),
+                                  line_color='rgb(174,89,89)',
+                                  name='min - 10%',
+                                  hoverinfo='skip'))
+        # 10% - 25%
+        line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['25%'],4),
+                                  fill='tonexty',
+                                  mode='lines',
+                                  line=dict(width=0.7),
+                                  line_color='rgb(255,200,108)',
+                                  name='10% - 25%',
+                                  hoverinfo='skip'))
+        # 25% - 75%
+        line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['75%'],4),
+                                  fill='tonexty',
+                                  mode='lines',
+                                  line=dict(width=0.7),
+                                  line_color='rgb(97,255,113)',
+                                  name='25% - 75%',
+                                  hoverinfo='skip'))
+        # 75% - 80%
+        line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['80%'],4),
+                                  fill='tonexty',
+                                  mode='lines',
+                                  line=dict(width=0.7),
+                                  line_color='rgb(124,223,214)',
+                                  name='75% - 80%',
+                                  hoverinfo='skip'))
+        # 90% - max
+        line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['max'],4),
+                                  fill='tonexty',
+                                  mode='lines',
+                                  line=dict(width=0.7),
+                                  line_color='rgb(101,102,251)',
+                                  name='80% - max',
+                                  hoverinfo='skip'))
+
+        # Order of the hover info.
+        # 5% line
+        line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['5%'],4), mode='lines',
+                                  name='5%',
+                                  line=dict(width=1.0, color='grey', dash='dash')))
+        # 95% line
+        line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['95%'],4), mode='lines',
+                                  name='95%',
+                                  line=dict(width=1.0, color='grey', dash='dash')))
+        # current line
+        if layer == 'surface':
+            my_col = 'surface_7d_mean'
+            title = 'surface: 5 & 10cm'
+        else:
+            my_col = 'root_7d_mean'
+            title = 'root zone: 20, 50, & 100cm'
+        line.add_trace(go.Scatter(x=select_df['Date'], y=round(select_df[my_col],4), mode='lines',
+                                  name='current',
+                                  line=dict(width=2.5, color='black')))
+        # And now the lines for hover info only - not legend
+        line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['10%'], 4),
+                                  mode='lines',
+                                  line=dict(width=0.7),
+                                  line_color='rgb(174,89,89)',
+                                  name='10%',
+                                  showlegend=False))
+        line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['25%'], 4),
+                                  mode='lines',
+                                  line=dict(width=0.7),
+                                  line_color='rgb(255,200,108)',
+                                  name='25%',
+                                  showlegend=False))
+        line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['75%'], 4),
+                                  mode='lines',
+                                  line=dict(width=0.7),
+                                  line_color='rgb(97,255,113)',
+                                  name='75%',
+                                  showlegend=False))
+        line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['80%'], 4),
+                                  mode='lines',
+                                  line=dict(width=0.7),
+                                  line_color='rgb(124,223,214)',
+                                  name='80%',
+                                  showlegend=False))
+        line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['max'], 4),
+                                  mode='lines',
+                                  line=dict(width=0.7),
+                                  line_color='rgb(101,102,251)',
+                                  name='max',
+                                  showlegend=False))
+        # grid background as white
+        text = '<span style="font-size: 20px;"><b>' + title + '<b>' + "<br><br>" + '<span style="font-size: 15px;"><b>' + station + '<b>'
+        line.update_layout(title=dict(text=text,
+                                      x=0.5, font=dict(family="Arial", size=20, color='black')),
+                           plot_bgcolor="white",
+                           xaxis=dict(showgrid=True, linecolor='black', gridcolor='rgb(240,240,240)', gridwidth=0.05),
+                           yaxis=dict(showgrid=True, linecolor='black', gridcolor='rgb(240,240,240)', gridwidth=0.05),
+                           hovermode='x')
     return line
 # ----------------------
 
@@ -454,6 +469,7 @@ def update_graph(start_Date, end_Date, stn):
     print('my current df')
     print(my_current.columns)
     print(my_current.head())
+    print(my_current.tail())
     surface_line = filled_line_graph(my_surface, my_current, 'surface', station)
     root_line = filled_line_graph(my_root, my_current, 'root layer', station)
 
