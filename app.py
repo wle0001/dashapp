@@ -265,7 +265,7 @@ def filled_line_graph(avg_df, select_df, layer, station):
                        plot_bgcolor="white",
                        xaxis=dict(showgrid=True, linecolor='black', gridcolor='rgb(240,240,240)', gridwidth=0.05),
                        yaxis=dict(showgrid=True, linecolor='black', gridcolor='rgb(240,240,240)', gridwidth=0.05),
-                       hovermode='x')}
+                       hovermode='x')
     return line
 # ----------------------
 
