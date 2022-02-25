@@ -140,24 +140,36 @@ for stn in stations:
 
 
 # --- For making the line graph -----
-def filled_line_graph(avg_df, select_df, layer, station):
+def filled_line_graph(avg_df, select_df, layer, station, start_date, end_date):
     # long-winded to change labels in legend vs hover.
     # min (line only - no legend)
     line = go.Figure()
     ##############################################################
     #This is added to just plot the STEMNet without any climatology
+
     if station[:4] == 'STEM':
+
+        link = compare[compare['station'] == station]['link'].iloc[0]
+        df2 = master_df[master_df['station']==link]
+
+        df2['Date'] = df2['Date'].dt.date
+        scan_link = df2[(df2['Date'] >= start_date) & (df2['Date'] <= end_date)]
 
         if layer == 'surface':
             my_col = '5cm'
             title = 'surface: 5cm'
         else:
             my_col = '20cm'
-            title = '20cm'
+            title = 'root zone: 20cm'
 
-        line.add_trace(go.Scatter(x=select_df['Date'], y=round(select_df[my_col],4), mode='lines',
-                                  name='current',
-                                  line=dict(width=2.5, color='black')))
+
+        line.add_trace(go.Scatter(x=select_df['Date'], y=round(select_df[my_col],4), mode='lines+markers',
+                                  name='STEMNet',
+                                  line=dict(color=colors[0], width=2)))
+
+        line.add_trace(go.Scatter(x=scan_link['Date'], y=round(scan_link[my_col],4), mode='lines+markers',
+                                  name='SCAN',
+                                  line=dict(color=colors[1], width=2)))
     ##############################################################
     else:
 
@@ -262,7 +274,7 @@ def filled_line_graph(avg_df, select_df, layer, station):
     text = '<span style="font-size: 20px;"><b>' + title + '<b>' + "<br><br>" + '<span style="font-size: 15px;"><b>' + station + '<b>'
     line.update_layout(title=dict(text=text,
                                   x=0.5, font=dict(family="Arial", size=20, color='black')),
-                       plot_bgcolor="white",
+                       plot_bgcolor="white",yaxis_title='Soil Moisture %',
                        xaxis=dict(showgrid=True, linecolor='black', gridcolor='rgb(240,240,240)', gridwidth=0.05),
                        yaxis=dict(showgrid=True, linecolor='black', gridcolor='rgb(240,240,240)', gridwidth=0.05),
                        hovermode='x')
@@ -472,25 +484,51 @@ def update_graph(start_Date, end_Date, stn):
     print(my_current.columns)
     print(my_current.head())
     print(my_current.tail())
-    surface_line = filled_line_graph(my_surface, my_current, 'surface', station)
-    root_line = filled_line_graph(my_root, my_current, 'root layer', station)
+    surface_line = filled_line_graph(my_surface, my_current, 'surface', station, start_date, end_date)
+    root_line = filled_line_graph(my_root, my_current, 'root layer', station, start_date, end_date)
 
     # -------- 7d rolling avg line graph ----
     depths = ['5cm_7d', '10cm_7d', '20cm_7d', '50cm_7d', '100cm_7d']
     # get avgs across all years for each of the 5 depths
     all_line = go.Figure()
     # Create and style traces
-    for i in range(0,len(depths)):
-        col = depths[i]
-        hue = str(colors[i])
-        my_a = df.groupby('mo_day')[col].mean().reset_index()
-        my_av = my_a[my_a['mo_day'].isin(select_mo_day)].copy()
-        my_avg = pd.merge(my_av, date_df, on='mo_day', how='left')
+    #Adding section to just but lower layer STEMNet here instead of averages.
+    ############################################################################
+    if station[:4] == 'STEM':
 
-        # In case there is no current data:
-        all_line.add_trace(go.Scatter(x=my_current['Date'], y=my_current[col], name=col,mode='lines+markers',line=dict(color=hue, width=2)))
-        all_line.add_trace(go.Scatter(x=my_avg['Date'], y=my_avg[col],
-                                 name = col + " avg.",opacity=.5, line=dict(color=colors[i], width=1, dash='dash'), marker = dict(size = 8, color = colors[i], symbol = 'cross')))
+        link = compare[compare['station'] == station]['link'].iloc[0]
+        df2 = master_df[master_df['station']==link]
+
+        df2['Date'] = df2['Date'].dt.date
+        scan_link = df2[(df2['Date'] >= start_date) & (df2['Date'] <= end_date)]
+
+
+        my_col = '50cm'
+        title = 'root zone: 50cm'
+
+        all_line.add_trace(go.Scatter(x=my_current['Date'], y=round(my_current[my_col],4), mode='lines+markers',
+                                  name='STEMNet',
+                                  line=dict(color=colors[0], width=2)))
+
+        all_line.add_trace(go.Scatter(x=scan_link['Date'], y=round(scan_link[my_col],4), mode='lines+markers',
+                                  name='SCAN',
+                                  line=dict(color=colors[1], width=2)))
+    ############################################################################
+    else:
+
+        for i in range(0,len(depths)):
+            col = depths[i]
+            hue = str(colors[i])
+            my_a = df.groupby('mo_day')[col].mean().reset_index()
+            my_av = my_a[my_a['mo_day'].isin(select_mo_day)].copy()
+            my_avg = pd.merge(my_av, date_df, on='mo_day', how='left')
+
+
+
+            # In case there is no current data:
+            all_line.add_trace(go.Scatter(x=my_current['Date'], y=my_current[col], name=col,mode='lines+markers',line=dict(color=hue, width=2)))
+            all_line.add_trace(go.Scatter(x=my_avg['Date'], y=my_avg[col],
+                                     name = col + " avg.",opacity=.5, line=dict(color=colors[i], width=1, dash='dash'), marker = dict(size = 8, color = colors[i], symbol = 'cross')))
 
     # dash options include 'dash', 'dot', and 'dashdot'
     # Edit the layout

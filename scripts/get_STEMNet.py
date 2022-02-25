@@ -14,6 +14,8 @@ def vmc(x):
 
     mc = (4.824e-10*(x**3))-(2.278e-6*(x**2))+(3.898e-3*x)-2.154
     
+    mc = mc*100
+    
     return mc
 
 urlDict = {'STEMNet-1':'https://emeshnetwork.net/stemmnet-upload/devices/33459-1486836.csv',
