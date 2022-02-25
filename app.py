@@ -144,19 +144,21 @@ def filled_line_graph(avg_df, select_df, layer, station):
     # long-winded to change labels in legend vs hover.
     # min (line only - no legend)
     line = go.Figure()
+    ##############################################################
+    #This is added to just plot the STEMNet without any climatology
     if station[:4] == 'STEM':
 
         if layer == 'surface':
-            my_col = 'surface_7d_mean'
-            title = 'surface: 5 & 10cm'
+            my_col = '5cm'
+            title = 'surface: 5cm'
         else:
-            my_col = 'root_7d_mean'
-            title = 'root zone: 20, 50, & 100cm'
+            my_col = '20cm'
+            title = '20cm'
 
         line.add_trace(go.Scatter(x=select_df['Date'], y=round(select_df[my_col],4), mode='lines',
                                   name='current',
                                   line=dict(width=2.5, color='black')))
-
+    ##############################################################
     else:
 
         line.add_trace(go.Scatter(x=avg_df['Date'], y=round(avg_df['min'], 4),
@@ -256,14 +258,14 @@ def filled_line_graph(avg_df, select_df, layer, station):
                                   line_color='rgb(101,102,251)',
                                   name='max',
                                   showlegend=False))
-        # grid background as white
-        text = '<span style="font-size: 20px;"><b>' + title + '<b>' + "<br><br>" + '<span style="font-size: 15px;"><b>' + station + '<b>'
-        line.update_layout(title=dict(text=text,
-                                      x=0.5, font=dict(family="Arial", size=20, color='black')),
-                           plot_bgcolor="white",
-                           xaxis=dict(showgrid=True, linecolor='black', gridcolor='rgb(240,240,240)', gridwidth=0.05),
-                           yaxis=dict(showgrid=True, linecolor='black', gridcolor='rgb(240,240,240)', gridwidth=0.05),
-                           hovermode='x')
+    # grid background as white
+    text = '<span style="font-size: 20px;"><b>' + title + '<b>' + "<br><br>" + '<span style="font-size: 15px;"><b>' + station + '<b>'
+    line.update_layout(title=dict(text=text,
+                                  x=0.5, font=dict(family="Arial", size=20, color='black')),
+                       plot_bgcolor="white",
+                       xaxis=dict(showgrid=True, linecolor='black', gridcolor='rgb(240,240,240)', gridwidth=0.05),
+                       yaxis=dict(showgrid=True, linecolor='black', gridcolor='rgb(240,240,240)', gridwidth=0.05),
+                       hovermode='x')}
     return line
 # ----------------------
 
