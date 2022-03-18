@@ -29,16 +29,17 @@ session.verify = False
 
 wsdl = 'https://www.wcc.nrcs.usda.gov/awdbWebService/services?WSDL'
 # Intialize the client
+#https://www.nrcs.usda.gov/wps/portal/wcc/home/dataAccessHelp/webService/webServiceReference/
 client = Client(wsdl, transport=Transport(session=session))
 
-start_date = date(2022,2,15).strftime('%Y-%m-%d')
-end_date = date(2022, 3, 2).strftime('%Y-%m-%d')
+start_date = date(2022,1,1).strftime('%Y-%m-%d')
+end_date = date(2022, 3, 8).strftime('%Y-%m-%d')
 
 param = 'SMS'
 
 stn = '2078:AL:SCAN'
 
-depth = -20.0
+depth = -2.0
 
 '''
 retval = client.service.getData(stationTriplets=stn, elementCd=param, ordinal=1,
@@ -83,8 +84,8 @@ def vmc(x):
     
     return mc
 
-urlDict = {'STEMNet-1':'https://emeshnetwork.net/stemmnet-upload/devices/33459-1486836.csv',
-           'STEMNet-2':'https://emeshnetwork.net/stemmnet-upload/devices/68009-1616323.csv'}
+urlDict = {'STEMNet-2':'https://emeshnetwork.net/stemmnet-upload/devices/33459-1486836.csv',
+           'STEMNet-1':'https://emeshnetwork.net/stemmnet-upload/devices/68009-1616323.csv'}
 stm_df = pd.DataFrame()
 for url in urlDict: 
 
@@ -96,6 +97,8 @@ for url in urlDict:
     
     a[columns] = a['moistures'].str.split(';', expand = True)
     a[columns] = a[columns].apply(pd.to_numeric)
+    #poly = np.array([-9.27756773e-05,  5.28244528e-01, -1.00226268e+03,  6.33718261e+05])
+    #a[columns] = np.polyval(poly,a[columns])
     #a[columns] = a[columns].apply(vmc)
     
     a['site'] = url
@@ -115,16 +118,21 @@ for url in urlDict:
 stm_r = stm_df[stm_df['site'] == 'STEMNet-1']
 
 
-stm_r['SOIL_MOISTURE_50_DAILY'].plot()
-temp_df['SMS-20.0in'].plot()
-
-ax = stm_r['SOIL_MOISTURE_50_DAILY'].plot()
-ax1 = ax.twinx()
-temp_df['SMS-20.0in'].plot(ax = ax1, color = 'orange')
+stm_r['SOIL_MOISTURE_5_DAILY'].plot()
+temp_df['SMS-2.0in'].plot()
 '''
-x = temp_df['SMS-20.0in'][-240:].values
-y = stm_r['SOIL_MOISTURE_50_DAILY'][-240:].values
-z = temp_df['SMS-20.0in'][-240:].index.strftime('%j').values.astype(int)
+poly = np.array([-9.27756773e-05,  5.28244528e-01, -1.00226268e+03,  6.33718261e+05])
+x1 = np.polyval(poly,stm_r['SOIL_MOISTURE_5_DAILY'][-960:].resample('D').mean())
+y1 = temp_df['SMS-2.0in'][-960:].resample('D').mean().values
+plt.scatter(x1, y1)
+'''
+ax = stm_r['SOIL_MOISTURE_5_DAILY'].plot()
+ax1 = ax.twinx()
+temp_df['SMS-2.0in'].plot(ax = ax1, color = 'orange')
+'''
+x = temp_df['SMS-2.0in'][-960:].resample('D').mean().values
+y = stm_r['SOIL_MOISTURE_5_DAILY'][-960:].resample('D').mean().values
+z = temp_df['SMS-2.0in'][-960:].resample('D').mean().index.strftime('%j').values.astype(int)
 
 annotations=z
 
@@ -135,6 +143,10 @@ for i, label in enumerate(annotations):
     
 plt.colorbar()
 '''
+
+x = np.arange(1890,1930,1)
+a = vmc(x)
+plt.plot(a, x)
 
 
 
@@ -152,6 +164,8 @@ t = t.apply(vmc)
 
 t.plot()
 '''
+
+
 
 
 
