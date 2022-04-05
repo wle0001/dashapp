@@ -19,7 +19,8 @@ def vmc(x):
     return mc
 
 urlDict = {'STEMNet-1':'https://emeshnetwork.net/stemmnet-upload/devices/33459-1486836.csv',
-           'STEMNet-2':'https://emeshnetwork.net/stemmnet-upload/devices/68009-1616323.csv'}
+           'STEMNet-2':'https://emeshnetwork.net/stemmnet-upload/devices/68009-1616323.csv',
+           'STEMNet-3':'https://emeshnetwork.net/stemmnet-upload/devices/35199-185355.csv'}
 
 
 stm_df = pd.DataFrame()

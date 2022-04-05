@@ -32,8 +32,8 @@ wsdl = 'https://www.wcc.nrcs.usda.gov/awdbWebService/services?WSDL'
 #https://www.nrcs.usda.gov/wps/portal/wcc/home/dataAccessHelp/webService/webServiceReference/
 client = Client(wsdl, transport=Transport(session=session))
 
-start_date = date(2022,1,1).strftime('%Y-%m-%d')
-end_date = date(2022, 3, 8).strftime('%Y-%m-%d')
+start_date = date(2008,6,1).strftime('%Y-%m-%d')
+end_date = date(2008, 10, 31).strftime('%Y-%m-%d')
 
 param = 'SMS'
 

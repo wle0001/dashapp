@@ -33,7 +33,8 @@ session.verify = False
 
 # https://www.wcc.nrcs.usda.gov/web_service/AWDB_Web_Service_Reference.htm#getdata
 # URL to access AWDB webservices
-wsdl = 'https://www.wcc.nrcs.usda.gov/awdbWebService/services?WSDL'
+wsdl = 'https://wcc.sc.egov.usda.gov/awdbWebService/services?WSDL'
+
 # Intialize the client
 client = Client(wsdl, transport=Transport(session=session))
 # Following command can be used to check if the webservice is active
