@@ -27,7 +27,7 @@ urllib3.disable_warnings()
 session = Session()
 session.verify = False
 
-wsdl = 'https://www.wcc.nrcs.usda.gov/awdbWebService/services?WSDL'
+wsdl = 'https://wcc.sc.egov.usda.gov/awdbWebService/services?WSDL'
 # Intialize the client
 #https://www.nrcs.usda.gov/wps/portal/wcc/home/dataAccessHelp/webService/webServiceReference/
 client = Client(wsdl, transport=Transport(session=session))
@@ -41,9 +41,9 @@ stn = '2078:AL:SCAN'
 
 depth = -2.0
 
-'''
+
 retval = client.service.getData(stationTriplets=stn, elementCd=param, ordinal=1,
-                                                duration='HOURLY', getFlags=False, beginDate=start_date,
+                                                duration='DAILY', getFlags=False, beginDate=start_date,
                                                 alwaysReturnDailyFeb29=False, endDate=end_date,
                                                 heightDepth={'unitCd': 'in', 'value': depth})
 '''
@@ -52,16 +52,16 @@ retval = client.service.getHourlyData(stationTriplets=stn, elementCd=param, ordi
                                                 beginDate=start_date,
                                                 endDate=end_date,
                                                 heightDepth={'unitCd': 'in', 'value': depth})
-
+'''
 
 temp_df = pd.DataFrame()
-temp_df['Date'] = pd.date_range(start=retval[0].beginDate, end=retval[0].endDate, freq='H')
+temp_df['Date'] = pd.date_range(start=retval[0].beginDate, end=retval[0].endDate, freq='D')
 result = [val for val in retval[0].values]
 # here, I make the list items a float value, or NaN (for easier downstream data analyses)
 result2 = []
 for x in result:
     try:
-        result2.append(float(x['value']))
+        result2.append(float(x))
     except:
         result2.append(np.nan)
 # creating column name with depth and "in" for inches
@@ -70,6 +70,7 @@ col_name = str(str(param) + str(depth) + 'in')
 temp_df[col_name] = result2
 
 temp_df.index = temp_df['Date']
+temp_df = temp_df.drop('Date', axis = 1)
 # merge to the sm_df (which has the station column)
 # in other words, merge the data column with the correct station column
 #sm_df = pd.merge(sm_df, temp_df, on='Date', how='outer')
