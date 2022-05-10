@@ -312,7 +312,7 @@ app.layout = dbc.Container([
                                 clearable=True,
                                 min_date_allowed=dt(2001, 1, 1).date(),
                                 max_date_allowed=date.today(),
-                                start_date=date.today() - timedelta(days=7),
+                                start_date=date.today() - timedelta(days=14),
                                 end_date=date.today() - timedelta(days=1),
                                 initial_visible_month=dt.today().date(),
                                 display_format='MMM DD, YY',
