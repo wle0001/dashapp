@@ -32,14 +32,14 @@ wsdl = 'https://wcc.sc.egov.usda.gov/awdbWebService/services?WSDL'
 #https://www.nrcs.usda.gov/wps/portal/wcc/home/dataAccessHelp/webService/webServiceReference/
 client = Client(wsdl, transport=Transport(session=session))
 
-start_date = date(2008,6,1).strftime('%Y-%m-%d')
-end_date = date(2008, 10, 31).strftime('%Y-%m-%d')
+start_date = date(2022,1,1).strftime('%Y-%m-%d')
+end_date = date(2022, 4, 27).strftime('%Y-%m-%d')
 
 param = 'SMS'
 
 stn = '2078:AL:SCAN'
 
-depth = -2.0
+depth = -8.0
 
 
 retval = client.service.getData(stationTriplets=stn, elementCd=param, ordinal=1,
@@ -119,21 +119,21 @@ for url in urlDict:
 stm_r = stm_df[stm_df['site'] == 'STEMNet-1']
 
 
-stm_r['SOIL_MOISTURE_5_DAILY'].plot()
-temp_df['SMS-2.0in'].plot()
+stm_r['SOIL_MOISTURE_20_DAILY'].plot()
+temp_df['SMS-8.0in'].plot()
 '''
 poly = np.array([-9.27756773e-05,  5.28244528e-01, -1.00226268e+03,  6.33718261e+05])
 x1 = np.polyval(poly,stm_r['SOIL_MOISTURE_5_DAILY'][-960:].resample('D').mean())
 y1 = temp_df['SMS-2.0in'][-960:].resample('D').mean().values
 plt.scatter(x1, y1)
 '''
-ax = stm_r['SOIL_MOISTURE_5_DAILY'].plot()
-ax1 = ax.twinx()
-temp_df['SMS-2.0in'].plot(ax = ax1, color = 'orange')
+#ax = stm_r['SOIL_MOISTURE_5_DAILY'].plot()
+#ax1 = ax.twinx()
+#temp_df['SMS-2.0in'].plot(ax = ax1, color = 'orange')
 '''
-x = temp_df['SMS-2.0in'][-960:].resample('D').mean().values
-y = stm_r['SOIL_MOISTURE_5_DAILY'][-960:].resample('D').mean().values
-z = temp_df['SMS-2.0in'][-960:].resample('D').mean().index.strftime('%j').values.astype(int)
+x = temp_df['SMS-2.0in'].resample('D').mean()[-100:].values
+y = stm_r['SOIL_MOISTURE_5_DAILY'].resample('D').mean()[-100:].values
+z = temp_df['SMS-2.0in'][-100:].resample('D').mean().index.strftime('%j').values.astype(int)
 
 annotations=z
 
@@ -145,13 +145,13 @@ for i, label in enumerate(annotations):
 plt.colorbar()
 '''
 
-x = np.arange(1890,1930,1)
-a = vmc(x)
-plt.plot(a, x)
+#x = np.arange(1890,1930,1)
+#a = vmc(x)
+#plt.plot(a, x)
 
 
 
-plt.legend()
+#plt.legend()
 
 '''
 fname = 'soil_aamu1_11cm'
@@ -167,6 +167,16 @@ t.plot()
 '''
 
 
+x = temp_df['SMS-8.0in'].resample('D').mean()[-100:].values
+y = stm_r['SOIL_MOISTURE_20_DAILY'].resample('D').mean()[-100:].values
+z = temp_df['SMS-8.0in'][-100:].resample('D').mean().index.strftime('%j').values.astype(int)
+
+a = pd.DataFrame([x,y]).T
+a.columns = ['scan','stem']
+
+a['stem-sm'] = 0.199*a['stem']-344.7
+a.index = temp_df['SMS-2.0in'].resample('D').mean()[-100:].index
+a[['scan','stem-sm']].plot()
 
 
 
