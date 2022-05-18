@@ -32,14 +32,14 @@ wsdl = 'https://wcc.sc.egov.usda.gov/awdbWebService/services?WSDL'
 #https://www.nrcs.usda.gov/wps/portal/wcc/home/dataAccessHelp/webService/webServiceReference/
 client = Client(wsdl, transport=Transport(session=session))
 
-start_date = date(2022,1,1).strftime('%Y-%m-%d')
-end_date = date(2022, 4, 27).strftime('%Y-%m-%d')
+start_date = date(2000,1,1).strftime('%Y-%m-%d')
+end_date = date(2022, 5, 12).strftime('%Y-%m-%d')
 
 param = 'SMS'
 
-stn = '2078:AL:SCAN'
+stn = '2180:AL:SCAN'
 
-depth = -8.0
+depth = -2.0
 
 
 retval = client.service.getData(stationTriplets=stn, elementCd=param, ordinal=1,
@@ -85,6 +85,14 @@ def vmc(x):
     
     return mc
 
+def vmc2(x):
+
+    mc = (-0.0207*(x**3))+(1.9062*(x**2))+(54.998*x)+2390
+    
+    #mc = mc*100
+    
+    return mc
+
 urlDict = {'STEMNet-2':'https://emeshnetwork.net/stemmnet-upload/devices/33459-1486836.csv',
            'STEMNet-1':'https://emeshnetwork.net/stemmnet-upload/devices/68009-1616323.csv'}
 stm_df = pd.DataFrame()
@@ -127,13 +135,13 @@ x1 = np.polyval(poly,stm_r['SOIL_MOISTURE_5_DAILY'][-960:].resample('D').mean())
 y1 = temp_df['SMS-2.0in'][-960:].resample('D').mean().values
 plt.scatter(x1, y1)
 '''
-#ax = stm_r['SOIL_MOISTURE_5_DAILY'].plot()
-#ax1 = ax.twinx()
-#temp_df['SMS-2.0in'].plot(ax = ax1, color = 'orange')
+ax = stm_r['SOIL_MOISTURE_20_DAILY'].plot()
+ax1 = ax.twinx()
+temp_df['SMS-8.0in'].plot(ax = ax1, color = 'orange')
 '''
-x = temp_df['SMS-2.0in'].resample('D').mean()[-100:].values
-y = stm_r['SOIL_MOISTURE_5_DAILY'].resample('D').mean()[-100:].values
-z = temp_df['SMS-2.0in'][-100:].resample('D').mean().index.strftime('%j').values.astype(int)
+x = temp_df['SMS-8.0in'].resample('D').mean()[-100:].values
+y = stm_r['SOIL_MOISTURE_20_DAILY'].resample('D').mean()[-100:].values
+z = temp_df['SMS-8.0in'][-100:].resample('D').mean().index.strftime('%j').values.astype(int)
 
 annotations=z
 
@@ -145,9 +153,14 @@ for i, label in enumerate(annotations):
 plt.colorbar()
 '''
 
-#x = np.arange(1890,1930,1)
+x = np.arange(1870,1940,1)
+poly = np.array([-9.27756773e-05,  5.28244528e-01, -1.00226268e+03,  6.33718261e+05])
+poly = np.array([ 1.14663149e-04, -6.62265520e-01,  1.27500130e+03, -8.18165925e+05])
+a = np.polyval(poly,x)
 #a = vmc(x)
-#plt.plot(a, x)
+#a = 0.199*x-344.7
+#a = vmc(x)
+plt.plot(x, a)
 
 
 
@@ -175,7 +188,8 @@ a = pd.DataFrame([x,y]).T
 a.columns = ['scan','stem']
 
 a['stem-sm'] = 0.199*a['stem']-344.7
-a.index = temp_df['SMS-2.0in'].resample('D').mean()[-100:].index
+#a['stem-sm'] = np.polyval(poly,a['stem'])
+a.index = temp_df['SMS-8.0in'].resample('D').mean()[-100:].index
 a[['scan','stem-sm']].plot()
 
 
