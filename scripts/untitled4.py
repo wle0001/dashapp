@@ -32,14 +32,14 @@ wsdl = 'https://wcc.sc.egov.usda.gov/awdbWebService/services?WSDL'
 #https://www.nrcs.usda.gov/wps/portal/wcc/home/dataAccessHelp/webService/webServiceReference/
 client = Client(wsdl, transport=Transport(session=session))
 
-start_date = date(2000,1,1).strftime('%Y-%m-%d')
-end_date = date(2022, 5, 12).strftime('%Y-%m-%d')
+start_date = date(2020,1,1).strftime('%Y-%m-%d')
+end_date = date(2022, 5, 18).strftime('%Y-%m-%d')
 
 param = 'SMS'
 
-stn = '2180:AL:SCAN'
+stn = '2078:AL:SCAN'
 
-depth = -2.0
+depth = -4.0
 
 
 retval = client.service.getData(stationTriplets=stn, elementCd=param, ordinal=1,
