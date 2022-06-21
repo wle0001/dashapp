@@ -126,7 +126,11 @@ for url in urlDict:
 
 stm_r = stm_df[stm_df['site'] == 'STEMNet-1']
 
+###########################################################
+#SCAN - temp_df
+#STEM - stm_r
 
+###################################
 stm_r['SOIL_MOISTURE_20_DAILY'].plot()
 temp_df['SMS-8.0in'].plot()
 '''
