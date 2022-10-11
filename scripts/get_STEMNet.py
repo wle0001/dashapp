@@ -40,13 +40,13 @@ for url in urlDict:
 
     a[columns] = a['moistures'].str.split(';', expand = True)
     a[columns] = a[columns].apply(pd.to_numeric)
-    a[columns] = a[columns].apply(vmc)
+    #a[columns] = a[columns].apply(vmc)
 
     a['site'] = url
 
     a.index = pd.to_datetime(a['datetime'], unit = 's')
 
-    a = a.resample('D').mean()
+    a = a.resample('D').first()
 
     a['LST_DATE'] = a.index
 
@@ -58,4 +58,4 @@ for url in urlDict:
 
 
 
-stm_df.to_csv('STEMNet_AL_all.csv')
+#stm_df.to_csv('STEMNet_AL_all.csv')
