@@ -119,10 +119,19 @@ for stn in stations:
 master_df['mo_day'] = master_df['Date'].dt.strftime('%m-%d')
 
 pct_df = master_df.groupby(['station','mo_day'])['surface_7d_mean'].describe(percentiles=[0.05, 0.1, 0.25, 0.75, 0.8, 0.95]).reset_index()
+pct_df.columns = ['station', 'mo_day', 'count_7d', 'mean_s', 'std_s', 'min_s', '5%_s', '10%_s', '25%_s',
+       '50%_s', '75%_s', '80%_s', '95%_s', 'max_s']
 
 big_df = pd.merge(master_df,pct_df,on=['station','mo_day'])
 
+pct_df = master_df.groupby(['station','mo_day'])['root_7d_mean'].describe(percentiles=[0.05, 0.1, 0.25, 0.75, 0.8, 0.95]).reset_index()
 
+pct_df.columns = ['station', 'mo_day', 'count_7d', 'mean_r', 'std_r', 'min_r', '5%_r', '10%_r', '25%_r',
+       '50%_r', '75%_r', '80%_r', '95%_r', 'max_r']
+
+big_df = pd.merge(big_df,pct_df,on=['station','mo_day'])
+
+big_df.to_csv('updatedSCANdata.csv')
 
 
 
