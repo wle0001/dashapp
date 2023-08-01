@@ -28,6 +28,13 @@ urlDict = {'STEMNet-Bragg':'https://emeshnetwork.net/stemmnet-upload/devices/680
            'STEMNet-RiverRoad':'https://emeshnetwork.net/stemmnet-upload/devices/72225-1728160.csv',
            'STEMNet-Koptis':'https://emeshnetwork.net/stemmnet-upload/devices/72233-1728113.csv'}
 
+urlDict = {'SN001002':'https://emeshnetwork.net/stemmnet-upload/devices/68009-1616323.csv',
+           'SN001003':'https://emeshnetwork.net/stemmnet-upload/devices/33459-1486836.csv',
+           'SN001005':'https://emeshnetwork.net/stemmnet-upload/devices/35256-185418.csv',
+           'SN001006':'https://emeshnetwork.net/stemmnet-upload/devices/71789-1728161.csv',
+           'SN001008':'https://emeshnetwork.net/stemmnet-upload/devices/72225-1728160.csv',
+           'SN001004':'https://emeshnetwork.net/stemmnet-upload/devices/72233-1728113.csv'}
+
 
 stm_df = pd.DataFrame()
 for url in urlDict:
@@ -35,12 +42,18 @@ for url in urlDict:
     a = pd.read_csv(urlDict[url])
 
 
-    columns = ['SOIL_MOISTURE_5_DAILY','SOIL_MOISTURE_20_DAILY',
-               'SOIL_MOISTURE_50_DAILY']
+    columns = ['ms','mm',
+               'md']
 
     a[columns] = a['moistures'].str.split(';', expand = True)
     a[columns] = a[columns].apply(pd.to_numeric)
     #a[columns] = a[columns].apply(vmc)
+    
+    columns2 = ['ts','tm',
+               'td']
+
+    a[columns2] = a['temperatures'].str.split(';', expand = True)
+    a[columns2] = a[columns2].apply(pd.to_numeric)
 
     a['site'] = url
 
@@ -54,8 +67,8 @@ for url in urlDict:
 
     stm_df = stm_df.append(a)
 
-
-
+stem=  stm_df[['datetime','site','ms', 'mm', 'md', 'ts', 'tm','td']]
+stem = stem.melt(['datetime','site'], stem.columns[2:])
 
 
 #stm_df.to_csv('STEMNet_AL_all.csv')
